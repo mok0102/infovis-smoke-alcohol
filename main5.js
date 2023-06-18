@@ -399,6 +399,7 @@ Promise.all([
             isPlaying = false;
             d3.select(this).style("background-color", "red");
             d3.select(this).text("Not Playing")
+            
           } 
         else {
             // Start the animation if not already playing
