@@ -48,10 +48,12 @@ Promise.all([
         d.Value = +d.Value;
     });
 
-    alcoholData.forEach(function (d) {
+    
+
+    alcoholData.forEach(function(d){
         d.TIME = parseDate(d.TIME);
         d.Value = +d.Value;
-    });
+    })
 
     populationData.forEach(function(d){
         d.TIME = parseDate(d.TIME);
@@ -103,21 +105,35 @@ Promise.all([
 
         if (selectedCountries.includes("Select All")) return;
 
-        const tmp_smokeData = smokeData.filter(d => selectedCountries.includes(d.LOCATION));
-        const tmp_alcoholData = alcoholData.filter(d => selectedCountries.includes(d.LOCATION));
-        const tmp_mergedData = mergedData.filter(d => selectedCountries.includes(d.Country));
-
-        const tmp_populationData = populationData.filter(d => selectedCountries.includes(d.LOCATION));
         d3.selectAll("#chart svg").remove()
         d3.selectAll("#legend text").remove()
         d3.selectAll("#otherchart svg").remove()
-        drawSmokeLine(tmp_smokeData);
-        drawAlcoholLine(tmp_alcoholData);
-        drawBubble(tmp_mergedData);
-        d3.json("../data/countries.geojson").then(function(geodata){
-            // drawMap(tmp_populationData, geodata);
-            drawGdpMap(gdpData, geodata);
-        })
+        const tmp_smokeData = smokeData.filter(d => selectedCountries.includes(d.LOCATION));
+            const tmp_alcoholData = alcoholData.filter(d => selectedCountries.includes(d.LOCATION));
+            const tmp_mergedData = mergedData.filter(d => selectedCountries.includes(d.Country));
+            const tmp_gdpData = gdpData.filter(d => selectedCountries.includes(d.Code));
+            if(curState=="all"){
+                const play = d3.select("#play").property("disabled", true)
+                drawSmokeLine(tmp_smokeData);
+                drawAlcoholLine(tmp_alcoholData);
+                drawBubble(tmp_mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(tmp_populationData, geodata);
+                    drawGdpMap(tmp_gdpData, geodata);
+                })
+    
+            }
+            else if(curState=="bubble"){
+                console.log("herre!!!")
+                const play = d3.select("#play").property("disabled", false)
+                drawSmokeLine(tmp_smokeData, norm=true);
+                drawAlcoholLine(tmp_alcoholData, norm=true);
+                drawBubble(tmp_mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(tmp_populationData, geodata);
+                    drawGdpMap(tmp_gdpData, geodata)
+                })
+            }
     }
 
     // Select All checkbox functionality
@@ -131,21 +147,41 @@ Promise.all([
             d3.selectAll("#chart svg").remove()
             d3.selectAll("#legend text").remove()
             d3.selectAll("#otherchart svg").remove()
-            drawSmokeLine(smokeData);
-            drawAlcoholLine(alcoholData);
-            drawBubble(mergedData);
-            d3.json("../data/countries.geojson").then(function(geodata){
-                // drawMap(populationData, geodata);
-                drawGdpMap(gdpData, geodata);
-            })
+            if(curState=="all"){
+                const play = d3.select("#play").property("disabled", true)
+                drawSmokeLine(smokeData);
+                drawAlcoholLine(alcoholData);
+                drawBubble(mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(populationData, geodata);
+                    drawGdpMap(gdpData, geodata);
+                })
+    
+            }
+            else if(curState=="bubble"){
+                const play = d3.select("#play").property("disabled", false)
+                drawSmokeLine(smokeData, norm=true);
+                drawAlcoholLine(alcoholData, norm=true);
+                drawBubble(mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(populationData, geodata);
+                    drawGdpMap(gdpData, geodata)
+                })
+            }
 
         }
         else{
+            console.log("here!")
             selectedCountries = checkboxContainer
                 .selectAll("input[type='checkbox']")
                 .nodes()
                 .filter(checkbox => checkbox.checked)
                 .map(checkbox => checkbox.parentNode.textContent.trim());
+
+            console.log(selectedCountries)
+            d3.selectAll("#chart svg").remove()
+            d3.selectAll("#legend text").remove()
+            d3.selectAll("#otherchart svg").remove()
 
         
             if (selectedCountries.includes("Select All")) return;
@@ -153,12 +189,28 @@ Promise.all([
             const tmp_smokeData = smokeData.filter(d => selectedCountries.includes(d.LOCATION));
             const tmp_alcoholData = alcoholData.filter(d => selectedCountries.includes(d.LOCATION));
             const tmp_mergedData = mergedData.filter(d => selectedCountries.includes(d.Country));
-            d3.selectAll("#chart svg").remove()
-            d3.selectAll("#legend text").remove()
-            d3.selectAll("#otherchart svg").remove()
-            drawSmokeLine(tmp_smokeData);
-            drawAlcoholLine(tmp_alcoholData);
-            drawBubble(tmp_mergedData);
+            const tmp_gdpData = gdpData.filter(d => selectedCountries.includes(d.Code));
+            if(curState=="all"){
+                const play = d3.select("#play").property("disabled", true)
+                drawSmokeLine(tmp_smokeData);
+                drawAlcoholLine(tmp_alcoholData);
+                drawBubble(tmp_mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(tmp_populationData, geodata);
+                    drawGdpMap(tmp_gdpData, geodata);
+                })
+    
+            }
+            else if(curState=="bubble"){
+                const play = d3.select("#play").property("disabled", false)
+                drawSmokeLine(tmp_smokeData, norm=true);
+                drawAlcoholLine(tmp_alcoholData, norm=true);
+                drawBubble(tmp_mergedData);
+                d3.json("../data/countries.geojson").then(function(geodata){
+                    // drawMap(tmp_populationData, geodata);
+                    drawGdpMap(tmp_gdpData, geodata)
+                })
+            }
         }
     });
     const play = d3.select("#play").property("disabled", true)
@@ -188,12 +240,12 @@ Promise.all([
         step: 1,
         range: {
             'min': 1960,
-            'max': 2022
+            'max': 2020
         },
         pips: {
             mode: 'values',
-            values: [1960, 2022],
-            density: 4
+            values: [1960, 2020],
+            density: 1
           }
         });
 
@@ -205,7 +257,6 @@ Promise.all([
 
         curYear = startYear;
         yearText.text("Year: " + curYear);
-        console.log(curYear);
 
         d3.selectAll("#chart svg").remove()
         d3.selectAll("#legend text").remove()
@@ -235,6 +286,8 @@ Promise.all([
         }
         else if(curState=="bubble"){
             const play = d3.select("#play").property("disabled", false)
+            drawSmokeLine(tmp_smokeData, norm=true);
+            drawAlcoholLine(tmp_alcoholData, norm=true);
             drawBubble(tmp_mergedData);
             d3.json("../data/countries.geojson").then(function(geodata){
                 // drawMap(tmp_populationData, geodata);
@@ -256,10 +309,15 @@ Promise.all([
                 .nodes()
                 .filter(checkbox => checkbox.checked)
                 .map(checkbox => checkbox.parentNode.textContent.trim());
-
+        
+        const tmp_smokeData = smokeData.filter(d => selectedCountries.includes(d.LOCATION));
+        const tmp_alcoholData = alcoholData.filter(d => selectedCountries.includes(d.LOCATION));
         const tmp_mergedData = mergedData.filter(d => selectedCountries.includes(d.Country));
         const tmp_populationData = populationData.filter(d => selectedCountries.includes(d.LOCATION));
         const tmp_gdpData = gdpData.filter(d => selectedCountries.includes(d.Code));
+
+        drawSmokeLine(tmp_smokeData, norm=true);
+        drawAlcoholLine(tmp_alcoholData, norm=true);
         drawBubble(tmp_mergedData);
         d3.json("../data/countries.geojson").then(function(geodata){
             // drawMap(tmp_populationData, geodata);
@@ -529,13 +587,21 @@ function drawGdpMap(gdpData, geojsonData){
         smokeSvg.selectAll('path')
             .transition()
             .duration(200)
-            .attr("stroke-width", 1.5);
+            // .attr("stroke-width", 1.5);
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
 
         alcoholSvg.selectAll('path')
             .transition()
             .duration(200)
             // .attr("stroke", d=>cScale(d.LOCATION))
-            .attr("stroke-width", 1.5);
+            // .attr("stroke-width", 1.5);
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
         // Hide the tooltip on mouseout
         tooltip.style("opacity", 0);
       });
@@ -677,13 +743,21 @@ function drawMap(populationData, geojsonData){
         smokeSvg.selectAll('path')
             .transition()
             .duration(200)
-            .attr("stroke-width", 1.5);
+            // .attr("stroke-width", 1.5);//
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
 
         alcoholSvg.selectAll('path')
             .transition()
             .duration(200)
             // .attr("stroke", d=>cScale(d.LOCATION))
-            .attr("stroke-width", 1.5);
+            // .attr("stroke-width", 1.5);//
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
         // Hide the tooltip on mouseout
         tooltip.style("opacity", 0);
       });
@@ -838,13 +912,21 @@ function drawBubble(data) {
             smokeSvg.selectAll('path')
               .transition()
               .duration(200)
-              .attr("stroke-width", 1.5);
+            //   .attr("stroke-width", 1.5);
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
   
             alcoholSvg.selectAll('path')
               .transition()
               .duration(200)
               // .attr("stroke", d=>cScale(d.LOCATION))
-              .attr("stroke-width", 1.5);
+            //   .attr("stroke-width", 1.5);
+            .attr("stroke-width", d=>{
+                if(norm) return 1;
+                else return 1.5;
+            })
 
             mapSvg.selectAll('path')
               .transition()
@@ -863,11 +945,36 @@ function drawBubble(data) {
 
 }
 
-function drawAlcoholLine(alchoholData) {
+function drawAlcoholLine(alchoholData, norm=false) {
     // Set up the chart dimensions
     var margin = { top: 20, right: 20, bottom: 30, left: 80 };
     var width = 600 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
+
+    var save_alcoholData = alchoholData;
+
+    if (norm){
+        var groupedData = d3.group(alchoholData, d => d.LOCATION);
+
+        // Calculate minimum and maximum values for each country's alcohol values
+        var countryStats = new Map();
+        groupedData.forEach(function(values, country) {
+            var alcoholValues = values.map(d => parseFloat(d.Value));
+            var minValue = d3.mean(alcoholValues);
+            var maxValue = d3.deviation(alcoholValues);
+            countryStats.set(country, { minValue: minValue, maxValue: maxValue });
+        });
+
+        // Normalize the alcohol values for each country
+        alchoholData.forEach(function(d) {
+            var country = d.LOCATION;
+            var alcoholValue = parseFloat(d.Value);
+            var stats = countryStats.get(country);
+            var normalizedValue = (alcoholValue - stats.minValue) / (stats.maxValue)// - stats.minValue);
+            d.normalizedValue = +normalizedValue;
+            // console.log(d.normalizedValue);
+        });
+    }
 
     // Create the SVG element
     alcoholSvg = d3.select("#chart")
@@ -882,9 +989,21 @@ function drawAlcoholLine(alchoholData) {
       .domain(d3.extent(alchoholData, function (d) { return d.TIME; }))
       .range([0, width]);
 
+    // var yScale = d3.scaleLinear()
+    //   .domain([d3.min([d3.min(alchoholData, function (d) { return d.Value; })]), d3.max([d3.max(alchoholData, function (d) { return d.Value*0.735; })])])
+    //   .range([height, 0]);
+
     var yScale = d3.scaleLinear()
-      .domain([0, d3.max([d3.max(alchoholData, function (d) { return d.Value; })])])
+      .domain([d3.min([d3.min(alchoholData, function (d) { 
+        if (norm) return d.normalizedValue*1.2;
+        else return d.Value; 
+    })]), d3.max([d3.max(alchoholData, function (d) { 
+            // return d.Value*0.735; 
+            if (norm) return d.normalizedValue*1.2;
+            else return d.Value; 
+        })])])
       .range([height, 0]);
+    
 
     var xAxis = d3.axisBottom(xScale);
     var yAxis = d3.axisLeft(yScale);
@@ -935,17 +1054,41 @@ function drawAlcoholLine(alchoholData) {
         .attr("class", "tooltip")
         .style("opacity", 1);
 
+    const joinedData = d3.group(gdpData, d => d.Code);
+
+    // const lineScale = d3.scaleSequentialLog(d3.interpolatePuBuGn)
+    //     .domain([0, 20])
+
     // Draw the line
     alcoholSvg.selectAll(".line")
         .data(alchohol_group)
         .join("path")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return cScale(d[0]) })
-        .attr("stroke-width", 1.5)
+        .attr("stroke", function(d){ 
+            if (norm){ 
+                // return "#69b3a2"
+                var location = d[0];
+                var gdp = joinedData.get(location);
+                // console.log(joinedData)
+                // console.log(gdp)
+                // console.log(gdp[0][curYear])
+                // if (gdp[0][curYear]>5 && gdp[0][curYear]) return "orange";
+                // else return "#69b3a2";
+                return colorScale(gdp ? +gdp[0][curYear] : 0);
+            }
+            else return cScale(d[0]) ;
+        })
+        .attr("stroke-width", d=>{
+            if(norm) return 1;
+            else return 1.5;
+        })
         .attr("d", function(d){
             return d3.line()
             .x(function(d) { return xScale(d.TIME); })
-            .y(function(d) { return yScale(d.Value); })
+            .y(function(d) { 
+                if (norm) return yScale(d.normalizedValue);
+                else return yScale(d.Value); 
+            })
             (d[1])
         })
         .on("mouseover", function(event, d){
@@ -1007,12 +1150,18 @@ function drawAlcoholLine(alchoholData) {
             d3.select(this)
                 .transition()
                 .duration(200)
-                .attr("stroke-width", 1.5); // Increase the stroke width of the line   
+                .attr("stroke-width", d=>{
+                    if(norm) return 1;
+                    else return 1.5;
+                }) // Increase the stroke width of the line   
 
             smokeSvg.selectAll('path')
                 .transition()
                 .duration(200)
-                .attr("stroke-width", 1.5);
+                .attr("stroke-width", d=>{
+                    if(norm) return 1;
+                    else return 1.5;
+                })
 
             // var colorScale = d3.scaleSequential(d3.interpolateBlues)
             //     .domain([0, 400])
@@ -1045,11 +1194,29 @@ function drawAlcoholLine(alchoholData) {
         .attr("font-size", 13)
         .attr("class","label")
         .attr("x", function(d) { return xScale(d[1][d[1].length-1].TIME); }  )
-        .attr("y", function(d) { return yScale(d[1][d[1].length-1].Value); })
-        .attr("fill", function(d) { return cScale(d[0])})
+        .attr("y", function(d) { 
+            if (norm) return yScale(d[1][d[1].length-1].normalizedValue);
+            else return yScale(d[1][d[1].length-1].Value); })
+        .attr("fill", function(d) {
+            if (norm){ 
+                // return "#69b3a2"
+                var location = d[0];
+                var gdp = joinedData.get(location);
+                // console.log(joinedData)
+                // console.log(gdp)
+                // console.log(gdp[0][curYear])
+                // if (gdp[0][curYear]>5 && gdp[0][curYear]) return "orange";
+                // else return "#69b3a2";
+                return colorScale(gdp ? +gdp[0][curYear] : 0);
+            }
+            else return cScale(d[0]) ;
+        })
         .attr("dy", ".75em")
-        .text(function(d) { return d[0]; }); 
+        .text(function(d) { 
+            return d[0]
+         }); 
     
+         
     // Legend    
     // const legend = d3.select("#legend")
     //         .append("svg")
@@ -1062,13 +1229,37 @@ function drawAlcoholLine(alchoholData) {
     // legend.append("text").attr("x", 18).attr("y", 18).text("Alcohol Per Year").style("font-size", "15px").attr('text-anchor', 'start').attr('alignment-baseline', 'hanging');
 }
 
-function drawSmokeLine(smokeData) {
+function drawSmokeLine(smokeData, norm=false) {
     // Set up the chart dimensions
     var margin = { top: 20, right: 20, bottom: 30, left: 100 };
     // var width = 600 - margin.left - margin.right;
     // var height = 400 - margin.top - margin.bottom;
     var width = 600 - margin.left - margin.right;
     var height = 300 - margin.top - margin.bottom;
+
+    // var save_smokeData = smokeData;
+
+    if (norm){
+        var groupedData = d3.group(smokeData, d => d.LOCATION);
+
+        // Calculate minimum and maximum values for each country's alcohol values
+        var countryStats = new Map();
+        groupedData.forEach(function(values, country) {
+            var alcoholValues = values.map(d => parseFloat(d.Value));
+            var minValue = d3.mean(alcoholValues);
+            var maxValue = d3.deviation(alcoholValues);
+            countryStats.set(country, { minValue: minValue, maxValue: maxValue });
+        });
+
+        // Normalize the alcohol values for each country
+        smokeData.forEach(function(d) {
+            var country = d.LOCATION;
+            var alcoholValue = parseFloat(d.Value);
+            var stats = countryStats.get(country);
+            var normalizedValue = (alcoholValue - stats.minValue) / (stats.maxValue);// - stats.minValue);
+            d.normalizedValue = +normalizedValue;
+        });
+    }
 
     // Create the SVG element
     smokeSvg = d3.select("#chart")
@@ -1084,7 +1275,13 @@ function drawSmokeLine(smokeData) {
       .range([0, width]);
 
     var yScale = d3.scaleLinear()
-      .domain([0, d3.max([d3.max(smokeData, function (d) { return d.Value; })])])
+      .domain([d3.min([d3.min(smokeData, function (d) { 
+        if (norm) return d.normalizedValue;
+        else return d.Value; 
+    })]), d3.max([d3.max(smokeData, function (d) { 
+        if (norm) return d.normalizedValue;
+        else return d.Value; 
+    })])])
       .range([height, 0]);
 
     var xAxis = d3.axisBottom(xScale);
@@ -1093,14 +1290,22 @@ function drawSmokeLine(smokeData) {
     // Add the x-axis
     smokeSvg.append("g")
       .attr("class", "x axis")
-      .attr("stroke-width", 1.5)
+    //   .attr("stroke-width", 1.5)
+        .attr("stroke-width", d=>{
+            if(norm) return 1;
+            else return 1.5;
+        })
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
     // Add the y-axis
     smokeSvg.append("g")
       .attr("class", "y axis")
-      .attr("stroke-width", 1.5)
+    //   .attr("stroke-width", 1.5)
+    .attr("stroke-width", d=>{
+        if(norm) return 1;
+        else return 1.5;
+    })
       .call(yAxis)
       .append("text")
       .attr("transform", "rotate(-90)")
@@ -1129,11 +1334,15 @@ function drawSmokeLine(smokeData) {
     // Define the line functions
     var line = d3.line()
       .x(function (d) { return xScale(d.TIME); })
-      .y(function (d) { return yScale(d.Value); });
+      .y(function (d) { 
+        return yScale(d.Value); 
+    });
 
     var smokeLine = d3.line()
       .x(function (d) { return xScale(d.TIME); })
-      .y(function (d) { return yScale(d.Value); });
+      .y(function (d) { 
+        return yScale(d.Value); 
+    });
 
     // data grouping
     const smoke_group = d3.group(smokeData, d=>d.LOCATION);
@@ -1144,17 +1353,38 @@ function drawSmokeLine(smokeData) {
         .attr("class", "tooltip")
         .style("opacity", 1);
 
+    const joinedData = d3.group(gdpData, d=>d.Code);
+
     // Draw the line
     smokeSvg.selectAll(".line")
         .data(smoke_group)
         .join("path")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return cScale(d[0]) })
-        .attr("stroke-width", 1.5)
+        .attr("stroke", function(d){ 
+            if (norm){
+                var location = d[0];
+                var gdp = joinedData.get(location);
+                // console.log(joinedData)
+                // console.log(gdp)
+                // console.log(gdp[0][curYear])
+                // if (gdp[0][curYear]>5 && gdp[0][curYear]) return "orange";
+                // else return "#69b3a2";
+                return colorScale(gdp ? +gdp[0][curYear] : 0);
+            }
+            return cScale(d[0]) 
+        })
+        // .attr("stroke-width", 1.5)
+        .attr("stroke-width", d=>{
+            if(norm) return 1;
+            else return 1.5;
+        })
         .attr("d", function(d){
             return d3.line()
             .x(function(d) { return xScale(d.TIME); })
-            .y(function(d) { return yScale(d.Value); })
+            .y(function(d) { 
+                if (norm) return yScale(d.normalizedValue);
+                else return yScale(d.Value); 
+            })
             (d[1])
         })
         .on("mouseover", function(event, d){
@@ -1216,12 +1446,18 @@ function drawSmokeLine(smokeData) {
             d3.select(this)
                 .transition()
                 .duration(100)
-                .attr("stroke-width", 1.5); // Increase the stroke width of the line
+                .attr("stroke-width", d=>{
+                    if(norm) return 1;
+                    else return 1.5;
+                }) // Increase the stroke width of the line
             tooltip.style("opacity", 0);
             alcoholSvg.selectAll('path')
                 .transition()
                 .duration(100)
-                .attr("stroke-width", 1.5);
+                .attr("stroke-width", d=>{
+                    if(norm) return 1;
+                    else return 1.5;
+                })
 
             // var colorScale = d3.scaleSequential(d3.interpolateBlues)
             // .domain([0, 400])
@@ -1250,8 +1486,16 @@ function drawSmokeLine(smokeData) {
         .attr("font-size", 13)
         .attr("class","label")
         .attr("x", function(d) { return xScale(d[1][d[1].length-1].TIME); }  )
-        .attr("y", function(d) { return yScale(d[1][d[1].length-1].Value); })
-        .attr("fill", function(d) { return cScale(d[0])})
+        .attr("y", function(d) { 
+            if (norm) return yScale(d[1][d[1].length-1].normalizedValue);
+            else return yScale(d[1][d[1].length-1].Value); })
+        .attr("fill", function(d) { 
+            if (norm){
+                var location = d[0];
+                var gdp = joinedData.get(location);
+                return colorScale(gdp ? +gdp[0][curYear] : 0);
+            }
+            else return cScale(d[0])})
         .attr("dy", ".75em")
         .text(function(d) { return d[0]; }); 
 
@@ -1265,4 +1509,5 @@ function drawSmokeLine(smokeData) {
     
     // // legend.append("rect").attr('x', 0).attr('y', 18).attr('width', 12).attr('height', 12).style("fill", "#7bccc4")
     // legend.append("text").attr("x", 0).attr("y", 18).text("Smoke Per Year").style("font-size", "15px").attr('text-anchor', 'start').attr('alignment-baseline', 'hanging');
+
 }
