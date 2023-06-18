@@ -913,8 +913,8 @@ function drawBubble(data) {
               .transition()
               .duration(200)
             //   .attr("stroke-width", 1.5);
-            .attr("stroke-width", d=>{
-                if(norm) return 1;
+            .attr("stroke-width", function(d){
+                if(curState=="bubble") return 1;
                 else return 1.5;
             })
   
@@ -923,8 +923,8 @@ function drawBubble(data) {
               .duration(200)
               // .attr("stroke", d=>cScale(d.LOCATION))
             //   .attr("stroke-width", 1.5);
-            .attr("stroke-width", d=>{
-                if(norm) return 1;
+            .attr("stroke-width", function(d){
+                if(curState=="bubble") return 1;
                 else return 1.5;
             })
 
