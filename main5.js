@@ -455,7 +455,7 @@ Promise.all([
                     .transition()
                     .duration(200)
                     .attr("r", function(d){
-                        return (d.Population_Value)*0.1+10
+                        return d3.min([(d.Population_Value)*0.1+10, 15])
                         // return 15
                     })
                     // .attr("stroke", d=> cScale(d.Country))
