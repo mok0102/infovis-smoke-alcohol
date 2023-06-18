@@ -30,11 +30,11 @@ var colorScale = d3.scaleSequential(d3.interpolateBlues)
     // .domain([0, 400])
 
 Promise.all([
-    d3.csv("../data/smoke.csv"),
-    d3.csv("../data/alcohol.csv"),
-    d3.csv("../data/population.csv"),
-    d3.csv("../data/gdp_growth.csv"),
-    d3.csv("../data/smoke_alcohol_pop_merged.csv")
+    d3.csv("data/smoke.csv"),
+    d3.csv("data/alcohol.csv"),
+    d3.csv("data/population.csv"),
+    d3.csv("data/gdp_growth.csv"),
+    d3.csv("data/smoke_alcohol_pop_merged.csv")
   ]).then(function (data) {
     smokeData = data[0];
     alcoholData = data[1];
