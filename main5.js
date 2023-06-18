@@ -48,11 +48,19 @@ Promise.all([
         d.Value = +d.Value;
     });
 
+    smokeData = smokeData.filter(function(d){
+        return parseInt(new Date(d.TIME).getFullYear()) % 5 ===0;
+    })
+
     
 
     alcoholData.forEach(function(d){
         d.TIME = parseDate(d.TIME);
         d.Value = +d.Value;
+    })
+
+    alcoholData = alcoholData.filter(function(d){
+        return parseInt(new Date(d.TIME).getFullYear()) % 5 ===0;
     })
 
     populationData.forEach(function(d){
@@ -213,11 +221,11 @@ Promise.all([
             }
         }
     });
-    const play = d3.select("#play").property("disabled", true)
+    // const play = d3.select("#play").property("disabled", true)
 
-    drawSmokeLine(smokeData);
-    drawAlcoholLine(alcoholData);
-    drawBubble(mergedData);
+    drawSmokeLine(smokeData, norm=true);
+    drawAlcoholLine(alcoholData, norm=true);
+    drawBubble(mergedData, norm=true);
     d3.json("countries.geojson").then(function(geodata){
         // drawMap(populationData, geodata);
         drawGdpMap(gdpData, geodata);
@@ -379,8 +387,8 @@ Promise.all([
         .range([height, 0])
 
     var sizeScale = d3.scaleSqrt()
-        .domain([0, d3.max(data, d => d.Population_Value)])
-        .range([5, 50]);
+        .domain([0, d3.max(data, d => d.Population_Value)*0.01])
+        .range([3, 10]);
 
     const playbtn = d3.select("#play")
     
@@ -402,6 +410,7 @@ Promise.all([
             interval = setInterval(function() {
               // Increment the current year
               currentYear++;
+
         
               // Check if the current year exceeds the endYear
               if (currentYear > 2020) {
@@ -427,8 +436,33 @@ Promise.all([
             //     return new Date(d.TIME).getFullYear()==curYear-1 && selectedCountries.includes(d.LOCATION);
             //     }), d=>d.LOCATION)
                 
-                d3.select("#otherchart #bubblechart svg").remove()
-                drawBubble(tmp_mergedData);
+                bubbleSvg.selectAll('circle')
+                    .filter(function(bubbled){
+                        return bubbled && curYear-1 === parseInt(new Date(bubbled.TIME).getFullYear());
+                    })
+                    .transition()
+                    .duration(200)
+                    .attr("r", 3)
+                    .attr("fill", d=> cScale(d.Country))
+                    .attr("stroke", "none");
+
+                bubbleSvg.selectAll('circle')
+                    .filter(function(bubbled){
+                        console.log(curYear, parseInt(new Date(bubbled.TIME).getFullYear()))
+                        return bubbled && curYear === parseInt(new Date(bubbled.TIME).getFullYear());
+                    })
+                    .transition()
+                    .duration(200)
+                    .attr("r", function(d){
+                        return (d.Population_Value)*0.1+10
+                        // return 15
+                    })
+                    // .attr("stroke", d=> cScale(d.Country))
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", 2)
+                    
+                    
+                    
 
                 // Join population data with location coordinates
                 const tmp_gdpData = gdpData.filter(d => selectedCountries.includes(d.Code));
@@ -800,9 +834,9 @@ function drawBubble(data) {
         .domain([0, d3.max(data, d => d.Population_Value)])
         .range([5, 50]);
 
-    data = data.filter(function(d){
-        return new Date(d.TIME).getFullYear()==curYear;
-    });
+    // data = data.filter(function(d){
+    //     return new Date(d.TIME).getFullYear()==curYear;
+    // });
 
     // Define the position of each axis
     const xAxis = d3.axisBottom(xScale);
@@ -860,7 +894,8 @@ function drawBubble(data) {
             // return yScale(getValue(d.LOCATION, alcoholData));
             return yScale(d.Alcohol_Value);
         })
-        .attr("r", d=> sizeScale(d.Population_Value))
+        // .attr("r", d=> sizeScale(d.Population_Value))
+        .attr("r", d=>3)
         .attr("fill", d=>cScale(d.Country))
         .attr("opacity", 1)
         .on("mouseover", function(event, d){
@@ -868,7 +903,7 @@ function drawBubble(data) {
                 .transition()
                 .duration(200)
                 // .style("fill", "orange")
-                .attr("r", sizeScale(d.Population_Value)+10);
+                .attr("r", 10);
 
             smokeSvg.selectAll('path')
                 .filter(function(smoked){
@@ -906,7 +941,8 @@ function drawBubble(data) {
             d3.select(this)
               .transition()
               .duration(200)
-              .attr("r", d=>sizeScale(d.Population_Value))
+            //   .attr("r", d=>sizeScale(d.Population_Value))
+                .attr("r", d=>3)
               .style("fill", d=>cScale(d.Country));
 
             smokeSvg.selectAll('path')
@@ -1215,6 +1251,31 @@ function drawAlcoholLine(alchoholData, norm=false) {
         .text(function(d) { 
             return d[0]
          }); 
+
+    // Create a new group for the tick lines
+    var tickLines = alcoholSvg.append("g").attr("class", "tick-lines");
+
+    // Select the tick elements and create a selection for the tick lines
+    var tickElements = alcoholSvg.selectAll(".x.axis .tick");
+    console.log(tickElements)
+
+    // Append a line for each tick
+    tickLines
+    .selectAll(".tick-line")
+    .data(tickElements.data())
+    .enter()
+    .append("line")
+    .attr("class", "tick-line")
+    .attr("x1", function (d) {
+        return xScale(d);
+    })
+    .attr("x2", function (d) {
+        return xScale(d);
+    })
+    .attr("y1", 0)
+    .attr("y2", height)
+    .style("stroke", "#ccc")
+    .style("stroke-width", 1);
     
          
     // Legend    
@@ -1509,5 +1570,29 @@ function drawSmokeLine(smokeData, norm=false) {
     
     // // legend.append("rect").attr('x', 0).attr('y', 18).attr('width', 12).attr('height', 12).style("fill", "#7bccc4")
     // legend.append("text").attr("x", 0).attr("y", 18).text("Smoke Per Year").style("font-size", "15px").attr('text-anchor', 'start').attr('alignment-baseline', 'hanging');
+    
+    // Create a new group for the tick lines
+    var tickLines = smokeSvg.append("g").attr("class", "tick-lines");
 
+    // Select the tick elements and create a selection for the tick lines
+    var tickElements = smokeSvg.selectAll(".x.axis .tick");
+    console.log(tickElements)
+
+    // Append a line for each tick
+    tickLines
+    .selectAll(".tick-line")
+    .data(tickElements.data())
+    .enter()
+    .append("line")
+    .attr("class", "tick-line")
+    .attr("x1", function (d) {
+        return xScale(d);
+    })
+    .attr("x2", function (d) {
+        return xScale(d);
+    })
+    .attr("y1", 0)
+    .attr("y2", height)
+    .style("stroke", "#ccc")
+    .style("stroke-width", 1);
 }
