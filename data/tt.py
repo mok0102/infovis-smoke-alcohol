@@ -1,7 +1,5 @@
 import pandas as pd
 
-import pandas as pd
-
 # Read the CSV files
 smoke_df = pd.read_csv('smoke.csv')
 alcohol_df = pd.read_csv('alcohol.csv')

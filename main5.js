@@ -587,9 +587,9 @@ function drawGdpMap(gdpData, geojsonData){
         smokeSvg.selectAll('path')
             .transition()
             .duration(200)
-            // .attr("stroke-width", 1.5);
-            .attr("stroke-width", d=>{
-                if(norm) return 1;
+            // .attr("stroke-width", 1+norm*0.5);
+            .attr("stroke-width", function(d){
+                if(curState=="bubble") return 1;
                 else return 1.5;
             })
 
@@ -597,9 +597,9 @@ function drawGdpMap(gdpData, geojsonData){
             .transition()
             .duration(200)
             // .attr("stroke", d=>cScale(d.LOCATION))
-            // .attr("stroke-width", 1.5);
-            .attr("stroke-width", d=>{
-                if(norm) return 1;
+            // .attr("stroke-width", 1+norm*0.5);
+            .attr("stroke-width", function(d){
+                if(curState=="bubble") return 1;
                 else return 1.5;
             })
         // Hide the tooltip on mouseout
