@@ -1,0 +1,76 @@
+
+
+#title{
+  margin-left: 5%;
+  text-align: center;
+}
+
+#buttons{
+  margin-top: 0%;
+  margin-left: 5%;
+  text-align: center;
+}
+
+#country-list {
+  max-height: 20px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#scrollable-list {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+#checkbox-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#checkbox-container label {
+  margin-bottom: 5px;
+}
+
+
+#slider-container{
+  width: 90%;
+  margin: 0 auto;
+}
+#slider{
+  width: 100%;
+  text-align: center;
+}
+
+#otherchart {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#otherchart > div {
+  flex: 1 1 50%;
+  max-width: 50%;
+  /* margin: 10px;
+  margin-right: 0px; */
+}
+
+#bubblechart{
+  margin-right: 0px;
+  width: 600px;
+}
+
+
+
+.tooltip {
+    position: absolute;
+    pointer-events: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #333;
+  }
