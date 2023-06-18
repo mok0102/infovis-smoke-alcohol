@@ -117,7 +117,7 @@ Promise.all([
                 drawSmokeLine(tmp_smokeData);
                 drawAlcoholLine(tmp_alcoholData);
                 drawBubble(tmp_mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(tmp_populationData, geodata);
                     drawGdpMap(tmp_gdpData, geodata);
                 })
@@ -129,7 +129,7 @@ Promise.all([
                 drawSmokeLine(tmp_smokeData, norm=true);
                 drawAlcoholLine(tmp_alcoholData, norm=true);
                 drawBubble(tmp_mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(tmp_populationData, geodata);
                     drawGdpMap(tmp_gdpData, geodata)
                 })
@@ -152,7 +152,7 @@ Promise.all([
                 drawSmokeLine(smokeData);
                 drawAlcoholLine(alcoholData);
                 drawBubble(mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(populationData, geodata);
                     drawGdpMap(gdpData, geodata);
                 })
@@ -163,7 +163,7 @@ Promise.all([
                 drawSmokeLine(smokeData, norm=true);
                 drawAlcoholLine(alcoholData, norm=true);
                 drawBubble(mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(populationData, geodata);
                     drawGdpMap(gdpData, geodata)
                 })
@@ -195,7 +195,7 @@ Promise.all([
                 drawSmokeLine(tmp_smokeData);
                 drawAlcoholLine(tmp_alcoholData);
                 drawBubble(tmp_mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(tmp_populationData, geodata);
                     drawGdpMap(tmp_gdpData, geodata);
                 })
@@ -206,7 +206,7 @@ Promise.all([
                 drawSmokeLine(tmp_smokeData, norm=true);
                 drawAlcoholLine(tmp_alcoholData, norm=true);
                 drawBubble(tmp_mergedData);
-                d3.json("../data/countries.geojson").then(function(geodata){
+                d3.json("countries.geojson").then(function(geodata){
                     // drawMap(tmp_populationData, geodata);
                     drawGdpMap(tmp_gdpData, geodata)
                 })
@@ -218,7 +218,7 @@ Promise.all([
     drawSmokeLine(smokeData);
     drawAlcoholLine(alcoholData);
     drawBubble(mergedData);
-    d3.json("../data/countries.geojson").then(function(geodata){
+    d3.json("countries.geojson").then(function(geodata){
         // drawMap(populationData, geodata);
         drawGdpMap(gdpData, geodata);
     })
@@ -278,7 +278,7 @@ Promise.all([
             drawSmokeLine(tmp_smokeData);
             drawAlcoholLine(tmp_alcoholData);
             drawBubble(tmp_mergedData);
-            d3.json("../data/countries.geojson").then(function(geodata){
+            d3.json("countries.geojson").then(function(geodata){
                 // drawMap(tmp_populationData, geodata);
                 drawGdpMap(tmp_gdpData, geodata);
             })
@@ -289,7 +289,7 @@ Promise.all([
             drawSmokeLine(tmp_smokeData, norm=true);
             drawAlcoholLine(tmp_alcoholData, norm=true);
             drawBubble(tmp_mergedData);
-            d3.json("../data/countries.geojson").then(function(geodata){
+            d3.json("countries.geojson").then(function(geodata){
                 // drawMap(tmp_populationData, geodata);
                 drawGdpMap(tmp_gdpData, geodata)
             })
@@ -319,7 +319,7 @@ Promise.all([
         drawSmokeLine(tmp_smokeData, norm=true);
         drawAlcoholLine(tmp_alcoholData, norm=true);
         drawBubble(tmp_mergedData);
-        d3.json("../data/countries.geojson").then(function(geodata){
+        d3.json("countries.geojson").then(function(geodata){
             // drawMap(tmp_populationData, geodata);
             drawGdpMap(tmp_gdpData, geodata);
         })
@@ -348,14 +348,14 @@ Promise.all([
         drawSmokeLine(tmp_smokeData);
         drawAlcoholLine(tmp_alcoholData);
         drawBubble(tmp_mergedData);
-        d3.json("../data/countries.geojson").then(function(geodata){
+        d3.json("countries.geojson").then(function(geodata){
             // drawMap(tmp_populationData, geodata);
             drawGdpMap(tmp_gdpData, geodata);
         })
         })
 
     var geo;
-     d3.json("../data/countries.geojson").then(function(geodata){
+     d3.json("countries.geojson").then(function(geodata){
         geo = geodata;
     })
 
